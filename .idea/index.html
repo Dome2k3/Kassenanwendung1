@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kassenanwendung</title>
+    <link rel="stylesheet" href="style.css"> <!-- Einbinden der CSS-Datei -->
+</head>
+<body>
+<div id="container">
+    <!-- Linke Seite: Buttons -->
+    <div id="button-panel">
+        <h3>Flammkuchen</h3>
+        <div class="button-group">
+            <button onclick="addItem('Flammkuchen 1', 8.50)">Flammkuchen 1</button>
+            <button onclick="addItem('Flammkuchen 2', 9.00)">Flammkuchen 2</button>
+            <button onclick="addItem('Flammkuchen 3', 10.00)">Flammkuchen 3</button>
+        </div>
+        <h3>Weitere Gerichte</h3>
+        <div class="button-group">
+            <button onclick="addItem('Pizza', 8.50)">Pizza</button>
+            <button onclick="addItem('Pasta', 7.00)">Pasta</button>
+            <button onclick="addItem('Salat', 6.50)">Salat</button>
+            <button onclick="addItem('Pommes', 2.50)">Pommes</button>
+            <button onclick="addItem('Wurst', 3.50)">Wurst</button>
+        </div>
+        <h3>Pfand</h3>
+        <div class="button-group">
+            <button onclick="addItem('Pfand', 0.50)">Pfand</button>
+        </div>
+        <h3>Extras</h3>
+        <div class="button-group">
+            <button onclick="location.href='statistics.html'">Statistik</button>
+        </div>
+    </div>
+
+    <!-- Rechte Seite: Bons und Historie -->
+    <div id="bon-panel">
+        <div id="receipt-section">
+            <h3>Aktueller Bon</h3>
+            <ul id="receipt-list"></ul>
+            <div class="action-buttons">
+                <button onclick="finalizeBon()">Bon abschließen</button>
+                <button onclick="resetReceipt()" class="reset">Bon zurücksetzen</button>
+            </div>
+        </div>
+        <div id="history-section">
+            <h3>Historie</h3>
+            <ul id="history-list"></ul>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script> <!-- Einbinden der JavaScript-Datei -->
+</body>
+</html>

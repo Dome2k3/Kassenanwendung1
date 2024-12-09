@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistik</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Optional für dein eigenes CSS -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #statistics-output {
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      max-width: 800px;
+      background-color: #f9f9f9;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    ul li {
+      margin-bottom: 5px;
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<h1>Verkaufsstatistik</h1>
+<div id="statistics-output">
+  <p>Statistikdaten werden geladen...</p>
+</div>
+<button onclick="window.location.href='index.html'">Zurück zur Kasse</button>
+<script>
+  // Funktion zur Berechnung der Statistiken
+  function calculateStatistics(salesData) {
+    let totalSales = 0;
+    let totalRevenue = 0;
+    let itemCounts = {};
+    const fifteenMinuteIntervals = [];
+
+    salesData.forEach((sale) => {
+      totalSales++;
+      totalRevenue += sale.total;
+
+      sale.items.forEach((item) => {
+        itemCounts[item] = (itemCounts[item] || 0) + 1;
+      });
+
+      const intervalDuration = 15 * 60 * 1000; // 15 Minuten in Millisekunden
+      const intervalIndex = Math.floor(new Date(sale.timestamp).getTime() / intervalDuration);
+
+      if (!fifteenMinuteIntervals[intervalIndex]) {
+        fifteenMinuteIntervals[intervalIndex] = {
+          startTime: new Date(intervalIndex * intervalDuration),
+          totalSales: 0,
+          totalRevenue: 0
+        };
+      }
+      fifteenMinuteIntervals[intervalIndex].totalSales++;
+      fifteenMinuteIntervals[intervalIndex].totalRevenue += sale.total;
+    });
+
+    displayStatistics(totalSales, totalRevenue, itemCounts, fifteenMinuteIntervals);
+  }
+
+  // Funktion zur Anzeige der Statistiken
+  function displayStatistics(totalSales, totalRevenue, itemCounts, fifteenMinuteIntervals) {
+    const statsOutput = document.getElementById('statistics-output');
+    statsOutput.innerHTML = `
+                <p><strong>Gesamtanzahl der Verkäufe:</strong> ${totalSales}</p>
+                <p><strong>Gesamtsumme der Verkäufe:</strong> €${totalRevenue.toFixed(2)}</p>
+                <p><strong>Verkaufte Einheiten pro Artikel:</strong></p>
+                <ul>
+                    ${Object.entries(itemCounts).map(([item, count]) => `<li>${item}: ${count}</li>`).join('')}
+                </ul>
+                <p><strong>Verkäufe alle 15 Minuten:</strong></p>
+                <ul>
+                    ${fifteenMinuteIntervals.map((interval, index) => `
+                        <li>Zeitraum ${new Date(interval.startTime).toLocaleTimeString()}:
+                            ${interval.totalSales} Verkäufe, €${interval.totalRevenue.toFixed(2)}
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+  }
+
+  // Beim Laden der Seite Statistik anzeigen
+  window.onload = function() {
+    const salesData = JSON.parse(localStorage.getItem('salesData')) || [];
+    if (salesData.length > 0) {
+      calculateStatistics(salesData);
+    } else {
+      document.getElementById('statistics-output').innerHTML = '<p>Keine Verkaufsdaten vorhanden.</p>';
+    }
+  };
+</script>
+</body>
+</html>
