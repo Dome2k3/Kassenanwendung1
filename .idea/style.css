@@ -86,19 +86,27 @@ body {
 }
 
 /* Historie */
+#history-section {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+    overflow-y: auto; /* Scrollbar aktivieren, falls Inhalt zu groß */
+    max-height: 300px; /* Maximale Höhe */
+}
+
 #history-list {
-    list-style: none;
+    list-style-type: none; /* Entfernt die Standard-Bullets der Liste */
     padding: 0;
     margin: 0;
 }
 
-#history-list li {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+.history-item {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+}
+
+.history-item:last-child {
+    border-bottom: none; /* Entfernt die Linie beim letzten Eintrag */
 }
 
 /* Scrollbar Styling */

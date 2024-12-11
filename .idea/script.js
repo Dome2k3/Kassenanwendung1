@@ -91,22 +91,31 @@ function printReceipt() {
 
 function updateHistory() {
     const historyList = document.getElementById('history-list');
-    historyList.innerHTML = ''; // Bestehenden Inhalt löschen
+    historyList.innerHTML = ''; // Liste zurücksetzen
 
-    // Historie in umgekehrter Reihenfolge durchlaufen, um den neuesten Bon oben zu zeigen
     history.forEach((receipt) => {
-        console.log("Anzeige Bon-Daten:", receipt);
-
-        // Erstelle einen Container für jeden Bon
         const historyItem = document.createElement('div');
-        historyItem.classList.add('history-item'); // Fügt der Klasse für den Stil hinzu
+        historyItem.classList.add('history-item');
 
-        historyItem.innerHTML = `
-            <h3>Bon Nr. ${receipt.id}</h3>
+        const details = document.createElement('div');
+        details.innerHTML = `
             <p><strong>Datum:</strong> ${receipt.timestamp}</p>
             <p><strong>Artikel:</strong><br>${receipt.items.replaceAll(',', '<br>')}</p>
-            <p><strong>Summe:</strong> €${Number(receipt.total).toFixed(2)}</p>
+            <p><strong>Summe:</strong> €${receipt.total}</p>
         `;
+        details.style.display = 'none'; // Versteckt die Details zunächst
+
+        const toggleButton = document.createElement('button');
+        toggleButton.textContent = 'Details anzeigen';
+        toggleButton.onclick = () => {
+            const isHidden = details.style.display === 'none';
+            details.style.display = isHidden ? 'block' : 'none';
+            toggleButton.textContent = isHidden ? 'Details verbergen' : 'Details anzeigen';
+        };
+
+        historyItem.innerHTML = `<h4>Bon Nr. ${receipt.id}</h4>`;
+        historyItem.appendChild(toggleButton);
+        historyItem.appendChild(details);
 
         historyList.appendChild(historyItem);
     });
