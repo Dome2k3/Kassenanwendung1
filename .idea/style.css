@@ -91,7 +91,7 @@ body {
     padding: 10px;
     background-color: #f9f9f9;
     overflow-y: auto; /* Scrollbar aktivieren, falls Inhalt zu groß */
-    max-height: 300px; /* Maximale Höhe */
+    max-height: 400px; /* Maximale Höhe */
 }
 
 #history-list {
@@ -156,3 +156,28 @@ body {
 .action-buttons button.reset:hover {
     background-color: #c82333;
 }
+
+/*Statistik Tabelle*/
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+table th, table td {
+    border: 1px solid #ddd; /* Passe die Farbe an, falls notwendig */
+    word-wrap: break-word;
+    max-width: 200px; /* Anpassbare Breite */
+    padding: 8px;
+    text-align: left;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+table thead {
+    background-color: #007bff;
+    color: white;
+}
+
+
+
