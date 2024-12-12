@@ -12,7 +12,7 @@ function addItem(itemName, itemPrice) {
     receiptList.appendChild(newItem);
 
     total += itemPrice;
-    document.getElementById('total').textContent = `Summe: ${total.toFixed(2)} Euro`; // Aktualisiert die Anzeige
+    document.getElementById('total').textContent = `Summe: ${total.toFixed(2)} €`; // Aktualisiert die Anzeige
     itemCount;
 }
 
@@ -22,7 +22,7 @@ function resetReceipt() {
     receiptList.innerHTML = ''; // Inhalt des aktuellen Bons löschen
 
     total = 0;
-    document.getElementById('total').textContent = total.toFixed(2);
+    document.getElementById('total').textContent = `Summe: ${total.toFixed(2)} €`; // Aktualisiert die Anzeige
     itemCount = 1; // Artikelnummer zurücksetzen
     // Keine Historie aktualisieren
 }
@@ -63,18 +63,13 @@ function updateHistory() {
         const historyItem = document.createElement('div');
         historyItem.classList.add('history-item');
 
-        // Header für jeden Bon
-        historyItem.innerHTML = `<h4>Bon Nr. ${receipt.id}</h4>`;
-
-        // Button zum Anzeigen der Details
-        const toggleButton = document.createElement('button');
-        toggleButton.textContent = 'Details anzeigen';
-        toggleButton.onclick = () => {
-            const details = historyItem.querySelector('.details');
-            const isHidden = details.style.display === 'none';
-            details.style.display = isHidden ? 'block' : 'none';
-            toggleButton.textContent = isHidden ? 'Details verbergen' : 'Details anzeigen';
-        };
+        // Header für jeden Bon mit Button daneben
+        historyItem.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4>Bon Nr. ${receipt.id}</h4>
+                <button class="toggle-details">Details anzeigen</button>
+            </div>
+        `;
 
         // Tabelle für die Details
         const details = document.createElement('div');
@@ -95,7 +90,7 @@ function updateHistory() {
                     <td>${receipt.timestamp}</td>
                     <td>
                         <ul>
-                            ${receipt.items.split(/(?=\d+\.\s)/).map(item => `<li>${item.trim()}</li>`).join('')}
+                            ${receipt.items.split('\n').map(item => `<li>${item}</li>`).join('')}
                         </ul>
                     </td>
                     <td>€${receipt.total}</td>
@@ -104,15 +99,21 @@ function updateHistory() {
         `;
         details.appendChild(table);
 
-        // Elemente hinzufügen
-        historyItem.appendChild(toggleButton);
+        // Event-Listener für den Button
+        const toggleButton = historyItem.querySelector('.toggle-details');
+        toggleButton.onclick = () => {
+            const isHidden = details.style.display === 'none';
+            details.style.display = isHidden ? 'block' : 'none';
+            toggleButton.textContent = isHidden ? 'Details verbergen' : 'Details anzeigen';
+        };
+
+        // Details hinzufügen
         historyItem.appendChild(details);
 
         // Zum Hauptcontainer hinzufügen
         historyList.appendChild(historyItem);
     });
 }
-
 
 
 
@@ -201,6 +202,7 @@ function calculateStatistics() {
 }
 
 
+
 // Funktion zur Anzeige der Statistiken
 function displayStatistics(totalSales, totalRevenue, itemCounts, fifteenMinuteIntervals) {
     const statsOutput = document.getElementById('statistic-output');
@@ -213,7 +215,7 @@ function displayStatistics(totalSales, totalRevenue, itemCounts, fifteenMinuteIn
         return { item: item.replace(/^\d+\.\s*/, ''), count, totalItemRevenue }; // Entfernt "1."
     });
 
-    // Tabellen-HTML erstellen
+    // Tabellen-HTML für Artikel erstellen
     const itemTable = `
         <table>
             <thead>
@@ -235,21 +237,38 @@ function displayStatistics(totalSales, totalRevenue, itemCounts, fifteenMinuteIn
         </table>
     `;
 
+    // Tabellen-HTML für 15-Minuten-Intervalle erstellen
+    const intervalTable = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Zeitraum</th>
+                    <th>Verkäufe</th>
+                    <th>Umsatz</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${fifteenMinuteIntervals.map(interval => `
+                    <tr>
+                        <td>${new Date(interval.startTime).toLocaleTimeString()}</td>
+                        <td>${interval.totalSales}</td>
+                        <td>€${interval.totalRevenue.toFixed(2)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
     // Gesamtausgabe
     statsOutput.innerHTML = `
         <p><strong>Gesamtanzahl der Verkäufe:</strong> ${totalSales}</p>
         <p><strong>Gesamtsumme der Verkäufe:</strong> €${totalRevenue.toFixed(2)}</p>
         ${itemTable}
         <p><strong>Verkäufe alle 15 Minuten:</strong></p>
-        <ul>
-            ${fifteenMinuteIntervals.map((interval, index) => `
-                <li>Zeitraum ${new Date(interval.startTime).toLocaleTimeString()}: 
-                    ${interval.totalSales} Verkäufe, €${interval.totalRevenue.toFixed(2)}
-                </li>
-            `).join('')}
-        </ul>
+        ${intervalTable}
     `;
 }
+
 
 // Beim Laden der Seite Statistik anzeigen
 window.onload = function() {

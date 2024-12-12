@@ -179,5 +179,16 @@ table thead {
     color: white;
 }
 
-
-
+.page-header #background-logo {
+    position: fixed; /* Im Hintergrund fixiert */
+    top: 0;
+    left: 0;
+    width: 100%; /* Vollständige Breite */
+    height: 100%; /* Vollständige Höhe */
+    background-image: url('./logo.png'); /* Pfad zum Logo */
+    background-size: contain; /* Bild wird proportional skaliert */
+    background-repeat: no-repeat; /* Bild wird nicht wiederholt */
+    background-position: center; /* Zentriert das Bild */
+    opacity: 0.5; /* Transparenz anpassen (0: unsichtbar, 1: vollständig sichtbar) */
+    z-index: -1; /* Hinter den anderen Elementen */
+}
